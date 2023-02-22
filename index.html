@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javascript AIP testing</title>
+    <style>
+        thead{
+            position: -webkit-sticky; /* Safari */
+            position: sticky;
+            top: 0;
+        }
+        tr,th,td{
+            padding: 15px ;
+        }
+        .table thead{
+            background-color: rgb(31, 57, 188);
+            opacity: 0.8;
+            color: white;
+        }
+        .table{
+            width: 70%;
+            margin: auto;
+            border: 1px solid #0404aa30;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .table tbody tr:nth-child(odd){
+            background-color: #1b58e559;
+        }
+        .table tbody tr:nth-child(even){
+            background-color: #1b58e563;
+        }
+        .table tbody tr:hover{
+            background-color: #04106b92;
+        }
+        .api-image{
+            width: 80px;
+        }
+        h2{
+            text-align: center;
+        }
+        .card{
+            width: 60%;
+            border: 1px solid #0404aa30;
+            margin: auto;
+            box-shadow: 1px 1px 10px #1b58e559;
+            margin-bottom: 20px;
+            padding: 10px;
+            
+        }
+        .card-body{
+            display: flex;
+            width: 100%;
+        }
+        .card-body img{
+            width: 150px;
+        }
+        .info{
+            padding-left: 50px;
+            text-align: left;
+        }
+        @media only screen and (min-width: 768px) and (max-width: 992px)  {
+        /* For mobile phones: */
+       .card-body img{
+            width: 80px;
+        }
+        h3{
+            font-size: 15px;
+            font-weight: 1em;
+        }
+        h4{
+            font-size: 15px;
+        }
+        h5{
+            font-size: 15px;
+        }
+       
+        }
+        @media only screen and (max-width: 768px) {
+             .card{
+            width: 60%;
+            height: auto;
+            margin: auto;
+            margin-bottom: 10px;
+        }
+        .card-body img{
+            width: 60px;
+        }
+        h3{
+            font-size: 10px;
+            font-weight: 1em;
+        }
+        h4{
+            font-size: 10px;
+        }
+        h5{
+            font-size: 10px;
+        }
+        
+        }
+    </style>
+</head>
+<body>
+    <h2>JavaScript AIP Call Testing</h2>
+    <div class="card" id="detail">
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Rating</th>
+            <th>Image</th>
+            </tr>
+        </thead>
+        <tbody id="page">
+        </tbody>
+    </table>
+    
+</body>
+<script>
+   // ajax, async await, fetch
+
+   //fetch
+   let page = document.getElementById("page");
+   let list = "";
+    fetch('https://fakestoreapi.com/products')
+    .then((re) => re.json())
+    .then((result) => { 
+        for(let i=0; i<result.length; i++){
+                 list += `<tr onclick="viewDetail(${result[i].id})">
+                <td>${result[i].id}</td>
+                <td>${result[i].title}</td>
+                <td>${result[i].price}</td>
+                <td>${result[i].rating.rate}</td>
+                <td><a href="${result[i].image}" target="b_link"><img src="${result[i].image}" class="api-image"></a> </td>
+                </tr>`;
+        }
+        page.innerHTML = list;
+    }
+    )
+    .catch((error) => console.log(error));
+
+    let detail = document.getElementById("detail");
+    detail.style.display = "none";
+    function viewDetail(id){
+        fetch('https://fakestoreapi.com/products/'+ id)
+            .then(res=>res.json())
+            .then(res => {
+                detail_data = ` 
+                <div class="card-body">
+                    <img src="${res['image']}" alt="">
+                    <div class="info">
+                        <h3>${res['title']}</h3>
+                        <h4>${res['price']}</h4>
+                        <h5>${res.rating.rate}</h5>
+                    </div>
+                </div>`
+                detail.innerHTML = detail_data;
+                detail.style.display = "block";
+            });
+        
+    }
+
+    //async await
+    let data = async() => {
+        let res = await fetch("https://fakestoreapi.com/products",{
+            method: "GET",
+            headers: {
+                "Content-Type" : "application/json",
+            },
+        });
+        let jsonRes = await res.json();
+    }
+    data();
+</script>
+</html>
